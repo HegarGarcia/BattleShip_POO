@@ -1,1 +1,3 @@
-export default class Ship {}
+export default class Ship {
+    constructor() {}
+}
