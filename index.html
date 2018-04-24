@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <script type="module" src="./class_player.js"></script>
+    <script type="module">
+        let p = new Player();
+        console.table(p._board.board);
+        p._board.board[0][0].boat = 'submarine';
+        p.shot({x:0,y:0}, p);
+        console.log(p._board.board[0][0]);
+        console.log(p.boats);
+    </script>
+</body>
+</html>
