@@ -1,7 +1,8 @@
 export default class Board {
     constructor() {
         let props = {length: 10};
-        let row = Array.from(props).fill({boat: false, shot: false});
-        this.board = Array.from(props).fill(row);
+        let cell = {boat: false, shot: false};
+        let row = () => Array.from(props).map(() => Object.assign({}, cell));
+        this.board = Array.from(props).map(row);
     }
 }
