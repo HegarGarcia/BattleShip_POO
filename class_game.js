@@ -1,6 +1,6 @@
-import Player from './class_player';
-import BonusCard from './class_bonus_card'
+import Player from './class_player.js';
 
 export default class BattleShip {
-    constructor() {}
+    constructor() {
+    }
 }
