@@ -1,8 +1,8 @@
-import { Coords } from './interfaces';
+import { Coords, BoatConstructor } from './interfaces';
 
 export default class Board {
 
-    private board:Object[][]
+    private board: Object[][]
 
     public constructor() {
         let props = {length: 10};
@@ -11,8 +11,8 @@ export default class Board {
         this.board = Array.from(props).map(row);
     }
 
-    public addBoat() {
-
+    public addBoat({x, y, direction, name}: BoatConstructor) {
+        
     }
 
     public checkFree() {
