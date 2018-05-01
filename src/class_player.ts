@@ -2,7 +2,7 @@ import Board from "./class_board.js";
 import Boat from "./class_boat.js";
 import Shot from "./class_shot.js";
 import { EventEmitter } from "./event_emitter.js";
-import { IBoat, ICoords } from "./interfaces";
+import { IBoat, ICell, ICoords } from "./interfaces";
 
 export default class Player {
 
@@ -25,29 +25,32 @@ export default class Player {
         this.mediator = mediator;
     }
 
-    public putBoat(boatName: IBoat["name"], {x, y, direction}: ICoords): void {
+    public putBoat(boatName: IBoat["name"], {x, y, direction}: ICoords): Promise<void> {
         if (this.boats.has(boatName) === false) {
             throw new Error("Barco no existe");
         }
+
         const boat: Boat = this.boats.get(boatName);
-        this.board.setBoat(boatName, {x, y, direction}, boat.getLength())
-        .then(() => {
-            this.mediator.emit("end-turn", false);
-        })
-        .catch((e) => {
+        try {
+            this.board.setBoat(boatName, {x, y, direction}, boat.getLength());
+        } catch (e) {
             console.error(e);
-        });
+        }
+
+        return Promise.resolve(null);
     }
 
     public shot(coords: ICoords, opponent: Player): void {
-        const target: null | string = opponent.board.getBoat(coords);
-        const shot: Shot = target === null ? new Shot(coords, false) : new Shot(coords, true);
+        const target: ICell = opponent.board.getCell(coords);
 
-        this.opponentBoard.setShot(shot, coords);
-        opponent.board.setShot(shot, coords);
+        if (target.shot === null) {
+            const shot: Shot = target.boat === null ? new Shot(coords, false) : new Shot(coords, true);
 
-        if (shot.hitted()) {
-            opponent.boats.get(target).reduceHealth();
+            Promise.all([this.opponentBoard.setShot(shot, coords), opponent.board.setShot(shot, coords)]);
+
+            if (shot.hitted()) {
+                opponent.boats.get(target.boat).reduceHealth();
+            }
         }
 
         this.mediator.emit("end-turn", opponent.checkLost());

@@ -8,15 +8,18 @@ class BattleShip {
 
     constructor() {
         this.mediator = new EventEmitter();
-
-        // this.mediator.on("end-turn", (data) => data.lost === false ? null : this.end());
+        this.mediator.on("end-turn", (data) => console.log(data));
     }
 
-    public start(): Player {
+    public async start(): Promise<Player> {
         this.player = new Player(this.mediator);
         this.cpu = new Player(this.mediator);
 
-        this.cpu.putBoat("carrier", {x: 0, y: 0, direction: {x: 1}});
+        await this.cpu.putBoat("carrier", {x: 3, y: 2, direction: {y: -1}});
+        await this.cpu.putBoat("battleship", {x: 3, y: 7, direction: {x: -1}});
+        await this.cpu.putBoat("submarine", {x: 4, y: 6, direction: {x: 1}});
+        await this.cpu.putBoat("destroyer", {x: 6, y: 4, direction: {y: -1}});
+        await this.cpu.putBoat("cruiser", {x: 6, y: 3, direction: {x: 1}});
 
         return this.player;
     }
