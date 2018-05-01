@@ -12,7 +12,7 @@ export interface ICoords {
 
 export interface IBoat {
     len: 2 | 3 | 4 | 5;
-    name: string;
+    name: "carrier" | "battleship" | "cruiser" | "submarine" | "destroyer";
 }
 
 export interface ICell {

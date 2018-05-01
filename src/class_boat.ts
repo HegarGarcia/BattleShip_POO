@@ -11,15 +11,16 @@ export default class Boat {
         this.name = name;
     }
 
-    public reduceHealth(): void {
+    public reduceHealth(): boolean {
         this.health--;
-    }
-
-    public isAlive(): boolean {
-        return this.health > 0;
+        return this.isAlive();
     }
 
     public getLength(): 2 | 3 | 4 | 5 {
         return this.length;
+    }
+
+    public isAlive(): boolean {
+        return this.health > 0;
     }
 }

@@ -29,7 +29,7 @@ export default class Board {
                 [ start, end ] = direction.x === 1 ? [x, x + length] : [x - length, x];
 
                 this.board[y] = this.board[y].reduce((arr: ICell[], curr: ICell, i: number) => {
-                    if (i > start && i < end) {
+                    if (i >= start && i < end) {
                         curr.boat = boatName;
                     }
                     arr.push(curr);
@@ -58,6 +58,10 @@ export default class Board {
             this.board[y][x].shot = shot;
             resolve(null);
         });
+    }
+
+    public print() {
+        console.table(this.board);
     }
 
     private checkValid({ x, y, direction = {x: 1}}: ICoords, length: 1 | 2 | 3 | 4 | 5 = 1): Promise<boolean> {

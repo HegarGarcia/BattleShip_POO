@@ -1,6 +1,7 @@
 import Board from "./class_board.js";
 import Boat from "./class_boat.js";
-import { EventEmitter } from "./eventemitter.js";
+import Shot from "./class_shot.js";
+import { EventEmitter } from "./event_emitter.js";
 import { IBoat, ICoords } from "./interfaces";
 
 export default class Player {
@@ -24,18 +25,35 @@ export default class Player {
         this.mediator = mediator;
     }
 
-    public async putBoat(boatName: string, {x, y, direction}: ICoords): Promise<any> {
-        return new Promise(async (resolve, reject) => {
-            if (this.boats.has(boatName) === false) {
-                reject(new Error("Barco no existe"));
-            }
-            const boat: Boat = this.boats.get(boatName);
-            await this.board.setBoat(boatName, {x, y, direction}, boat.getLength()).catch((e) => reject(e));
-            resolve(null);
+    public putBoat(boatName: IBoat["name"], {x, y, direction}: ICoords): void {
+        if (this.boats.has(boatName) === false) {
+            throw new Error("Barco no existe");
+        }
+        const boat: Boat = this.boats.get(boatName);
+        this.board.setBoat(boatName, {x, y, direction}, boat.getLength())
+        .then(() => {
+            this.mediator.emit("end-turn", false);
+        })
+        .catch((e) => {
+            console.error(e);
         });
     }
 
-    public shot({x, y}: ICoords, opponent: Player): void {
+    public shot(coords: ICoords, opponent: Player): void {
+        const target: null | string = opponent.board.getBoat(coords);
+        const shot: Shot = target === null ? new Shot(coords, false) : new Shot(coords, true);
 
+        this.opponentBoard.setShot(shot, coords);
+        opponent.board.setShot(shot, coords);
+
+        if (shot.hitted()) {
+            opponent.boats.get(target).reduceHealth();
+        }
+
+        this.mediator.emit("end-turn", opponent.checkLost());
+    }
+
+    private checkLost(): boolean {
+        return !Array.from(this.boats.values()).some((boat: Boat) => boat.isAlive());
     }
 }

@@ -12,7 +12,7 @@ export default class Shot {
         this.hit = hit;
     }
 
-    public getState(): boolean {
+    public hitted(): boolean {
         return this.hit;
     }
 }
