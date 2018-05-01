@@ -1,17 +1,25 @@
-import { BoatConstructor } from './interfaces';
+import { IBoat } from "./interfaces";
 
 export default class Boat {
-    
-    private length: Number;
-    private health: Number;
-    private name: String;
 
-    constructor({len, name, direction}: BoatConstructor) {
+    private name: string;
+    private length: 2 | 3 | 4 | 5;
+    private health: number;
+
+    constructor({len, name}: IBoat) {
         this.length = this.health = len;
         this.name = name;
     }
 
-    isAlive() {
+    public reduceHealth(): void {
+        this.health--;
+    }
+
+    public isAlive(): boolean {
         return this.health > 0;
+    }
+
+    public getLength(): 2 | 3 | 4 | 5 {
+        return this.length;
     }
 }

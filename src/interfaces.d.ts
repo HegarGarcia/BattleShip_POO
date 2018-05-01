@@ -1,13 +1,21 @@
-export interface Coords {
+import Boat from "./class_boat";
+import Shot from "./class_shot";
+
+export interface ICoords {
     x: number;
     y: number;
+    direction?: {
+        x?: 1 | -1,
+        y?: 1 | -1,
+    };
 }
 
-export interface BoatConstructor {
-    x?: number;
-    y?: number;
-    len?: number; 
-    name?: string; 
-    direction?: string;
+export interface IBoat {
+    len: 2 | 3 | 4 | 5;
+    name: string;
+}
 
+export interface ICell {
+    boat: null | string;
+    shot: null | Shot;
 }
