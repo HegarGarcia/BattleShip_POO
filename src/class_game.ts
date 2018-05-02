@@ -12,7 +12,7 @@ class BattleShip {
         this.mediator.on("end-turn", this.handler);
     }
 
-    public async start(): Promise<Player> {
+    public start(): Player {
         this.player = new Player(this.mediator);
         this.cpu = new Player(this.mediator, true);
 
