@@ -7,13 +7,15 @@ export default class Board {
 
     private board: ICell[][];
     private boatCount: Set<string>;
+    private isOpponent: boolean;
 
-    public constructor() {
+    public constructor(isOpponent: boolean = false) {
         const props = {length: 10};
         const cell: ICell = {boat: null, shot: null};
         const row = () => Array.from(props).map(() => Object.assign({}, cell));
         this.board = Array.from(props).map(row);
         this.boatCount = new Set();
+        this.isOpponent = isOpponent;
     }
 
     public getCell({x, y}: ICoords): ICell {
@@ -21,7 +23,7 @@ export default class Board {
     }
 
     public setBoat(boatName: string, {x, y, direction = {x: 1}}: ICoords, length: BoatLength): void {
-        if (this.boatCount.size > 5 || this.boatCount.has(boatName) !== false) {
+        if (this.boatCount.size === 5 || this.boatCount.has(boatName) !== false) {
             throw new Error("Barco(s) ya ubicado(s)");
         }
 
@@ -60,6 +62,10 @@ export default class Board {
     }
 
     public setShot(shot: Shot, {x, y}: ICoords): void {
+        if (this.boatCount.size !== 5 && !this.isOpponent) {
+            throw new Error("No se puede disparar hasta que hayan puesto todos los barcos");
+        }
+
         const valid = this.checkValid({x, y}, 1, true);
 
         if (valid !== true) {
@@ -71,8 +77,18 @@ export default class Board {
 
     public print() {
         const tempBoard = this.board.map((row) => row.map((cell) => {
-            return cell.boat === null && cell.shot === null ? null : cell.boat !== null && cell.shot !== null ? "±" :
-            cell.boat === null && cell.shot !== null ? "*" : "«";
+            let value;
+            if (cell.boat === null && cell.shot === null) {
+                value = null;
+            } else if (cell.shot !== null) {
+                value = cell.shot.hitted() === true ? "±" : "*";
+            } else if (cell.boat !== null) {
+                value = "«";
+            } else {
+                value = null;
+            }
+
+            return value;
         }));
         console.table(tempBoard);
     }

@@ -65,7 +65,7 @@ export class EventEmitter {
     }
 
     public once(event, listener) {
-        this.on(event, function g () {
+        this.on(event, function g() {
             this.removeListener(event, g);
             listener.apply(this, arguments);
         });
